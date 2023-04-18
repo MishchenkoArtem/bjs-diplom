@@ -1,4 +1,6 @@
 const logoutButton = new LogoutButton;
+const ratesBoard = new RatesBoard;
+const moneyManager = new MoneyManager;
 
 logoutButton.action = () => {
   ApiConnector.logout((element) => {
@@ -14,8 +16,6 @@ ApiConnector.current((response) => {
   }
 });
 
-const ratesBoard = new RatesBoard;
-
 function courseCurrency() {
   ApiConnector.getStocks((response) => {
     if (response) {
@@ -27,8 +27,6 @@ function courseCurrency() {
 
 courseCurrency();
 setInterval(() => courseCurrency(), 60000);
-
-const moneyManager = new MoneyManager;
 
 moneyManager.addMoneyCallback = (data) => {
   ApiConnector.addMoney(data, (response) => {
