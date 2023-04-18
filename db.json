@@ -60,6 +60,18 @@
         "EUR": 600,
         "NTC": 90000
       }
+    },
+    {
+      "created_at": "2023-04-18T14:57:55.898Z",
+      "login": "The_Nesh",
+      "password": "12345",
+      "id": 6,
+      "balance": {
+        "RUB": 410,
+        "USD": 0,
+        "EUR": 0,
+        "NTC": 0
+      }
     }
   ],
   "favorites": {
