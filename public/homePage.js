@@ -3,16 +3,19 @@ const ratesBoard = new RatesBoard;
 const moneyManager = new MoneyManager;
 const favoritesWidget = new FavoritesWidget;
 
+let interval = setInterval(() => courseCurrency(), 60000);
+
 logoutButton.action = () => {
-  ApiConnector.logout((element) => {
-    if (element) {
-      return location.reload();
+  ApiConnector.logout((response) => {
+    if (response) {
+        clearInterval(interval);
+        location.reload();
       }
     });
 };
 
 ApiConnector.current((response) => {
-  if (response) {
+  if (response.success) {
     ProfileWidget.showProfile(response.data);
   }
 });
@@ -27,7 +30,6 @@ function courseCurrency() {
 }
 
 courseCurrency();
-setInterval(() => courseCurrency(), 60000);
 
 moneyManager.addMoneyCallback = (data) => {
   ApiConnector.addMoney(data, (response) => {
@@ -68,20 +70,22 @@ moneyManager.sendMoneyCallback = (data) => {
   });
 }
 
+function getMethods(response) {
+  favoritesWidget.clearTable();
+  favoritesWidget.fillTable(response.data);
+  moneyManager.updateUsersList(response.data);
+}
+
 ApiConnector.getFavorites((response) => {
   if (response) {
-    favoritesWidget.clearTable();
-    favoritesWidget.fillTable(response.data);
-    moneyManager.updateUsersList(response.data);
+    getMethods(response);
   }
 });
 
 favoritesWidget.addUserCallback = (data) => {
   ApiConnector.addUserToFavorites(data, (response) => {
     if (response.success) {
-      favoritesWidget.clearTable();
-      favoritesWidget.fillTable(response.data);
-      moneyManager.updateUsersList(response.data);
+      getMethods(response);
       favoritesWidget.setMessage(response.success, 'Пользователь добавлен');
     } else {
       favoritesWidget.setMessage(response.success, response.error);
@@ -92,9 +96,7 @@ favoritesWidget.addUserCallback = (data) => {
 favoritesWidget.removeUserCallback = (id) => {
   ApiConnector.removeUserFromFavorites(id, (response) => {
     if (response.success) {
-      favoritesWidget.clearTable();
-      favoritesWidget.fillTable(response.data);
-      moneyManager.updateUsersList(response.data);
+      getMethods(response);
       favoritesWidget.setMessage(response.success, "Пользователь удален");
     } else {
       favoritesWidget.setMessage(response.success, response.error);
